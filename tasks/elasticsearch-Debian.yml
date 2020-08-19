@@ -22,20 +22,19 @@
     dpkg_selections:
       name: "{{ es_other_package_name }}"
       selection: "install"
-    when: elasticsearch_package.stdout == 'install ok installed'
+    when: "es_allow_package_upgrade and elasticsearch_package.stdout == 'install ok installed'"
 
   - name: stop elasticsearch
     service:
       name: 'elasticsearch'
       state: stopped
-    when: elasticsearch_package.stdout == 'install ok installed'
+    when: "es_allow_package_upgrade and elasticsearch_package.stdout == 'install ok installed'"
 
   - name: Debian - Remove elasticsearch package if we are switching to a different package type
     apt:
       name: '{{ es_other_package_name }}'
       state: absent
-    when: elasticsearch_package.stdout == 'install ok installed'
-
+    when: "es_allow_package_upgrade and elasticsearch_package.stdout == 'install ok installed'"
 
 - name: Install Elasticsearch repository
   when: es_use_repository
